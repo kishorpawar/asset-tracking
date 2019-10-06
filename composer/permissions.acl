@@ -1,0 +1,106 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/* Rule 1: The exporters can see only their own contracts. */
+
+rule ExporterContracts {
+    description: 'The exporters can see only their own contracts'
+    participant(p): 'asset.tracking.system.Exporter'
+    operation: READ
+    resource(c): 'asset.tracking.system.Contract'
+    condition: (c.exporter.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+/* Rule 2: The exporters can see only their own shipment. */
+
+rule ExporterShipments {
+    description: 'The exporters can see only their own shipments'
+    participant(p): 'asset.tracking.system.Exporter'
+    operation: READ
+    resource(s): 'asset.tracking.system.Shipment'
+    condition: (s.exporter.getIdentifier() === p.getIdentifier())
+    action: ALLOW    
+}
+
+/* Rule 3: The importers can see only their own contracts. */
+rule ImporterContracts {
+    description: 'The importers can see only their own contracts'
+    participant(p): 'asset.tracking.system.Importer'
+    operation: READ
+    resource(c): 'asset.tracking.system.Contracts'
+    condition: (c.importer.getIdentifier() === p.getIdentifier())
+    action: ALLOW    
+}
+
+/* Rule 4: The importers can see only their own shipment. */
+rule ImporterShipments {
+    description: 'The Importers can see only their own shipments'
+    participant(p): 'asset.tracking.system.Importer'
+    operation: READ
+    resource(s): 'asset.tracking.system.Shipment'
+    condition: (s.importer.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+
+/* Rule 5: The shippers can see only their own contracts. */
+rule ShipperContracts {
+    description: 'The shippers can see only their own contracts'
+    participant(p): 'asset.tracking.system.Shipper'
+    operation: READ
+    resource(c): 'asset.tracking.system.Contracts'
+    condition: (c.shipper.getIdentifier() === p.getIdentifier())
+    action: ALLOW    
+}
+
+/* Rule 6: The shippers can see only their own shipment. */
+rule ShipperShipments {
+    description: 'The shippers can see only their own shipments'
+    participant(p): 'asset.tracking.system.Shipper'
+    operation: READ
+    resource(s): 'asset.tracking.system.Shipment'
+    condition: (s.shipper.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+
+/*. Rule 7: The participants can view the system: */
+rule ReadOnlyParticipant {
+    description: 'The participants can view the system'
+    participant: 'org.hyperledger.composer.system.Participant'
+    operation: READ
+    resource: '*.*'
+    action: ALLOW    
+}
+
+/* Rule 8: The network admin user has access to all the resources. *
+rule IsNetworkAdminUser {
+    description: "Grant business network administrators full access to all the resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+/* Rule 9: The network admin system has access to all the resources. */
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to all the resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}

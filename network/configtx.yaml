@@ -1,0 +1,162 @@
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/reliance-network.com/msp
+
+    - &RelianceInfra
+        Name: RelianceInfraMSP
+        ID: RelianceInfraMSP
+        MSPDir: crytpo-config/peerOrganizations/infra.reliance-network.com/msp
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.infra.reliance-network.com
+              Port: 7051
+
+    - &ReliancePower
+        Name: ReliancePowerMSP
+        ID: ReliancePowerMSP
+        MSPDir: crytpo-config/peerOrganizations/power.reliance-network.com/msp
+        AnchorPeers:
+            - Host: peer0.power.reliance-network.com
+              Port: 9051
+
+    - &RelianceComm
+        Name: RelianceCommMSP
+        ID: RelianceCommMSP
+        MSPDir: crytpo-config/peerOrganizations/comm.reliance-network.com/msp
+        AnchorPeers:
+            - Host: peer0.comm.reliance-network.com
+              Port: 11051
+
+    - &RelianceEnt
+        Name: RelianceEntMSP
+        ID: RelianceEntMSP
+        MSPDir: crytpo-config/peerOrganizations/ent.reliance-network.com/msp
+        AnchorPeers:
+            - Host: peer0.ent.reliance-network.com
+              Port: 13051
+
+    - &RelianceCap
+        Name: RelianceCapMSP
+        ID: RelianceCapMSP
+        MSPDir: crytpo-config/peerOrganizations/cap.reliance-network.com/msp
+        AnchorPeers:
+            - Host: peer0.cap.reliance-network.com
+              Port: 15051
+
+################################################################################
+#
+#   SECTION: Capabilities
+#
+#   - 
+#
+################################################################################
+
+Capabilities:
+    Global: &ChannelCapabilities
+        V1_3: true
+    Orderer: &OrdererCapabilities
+        V1_3: true
+    Application: &ApplicationCapabilities
+        V1_3: true
+
+################################################################################
+#
+#   SECTION: Application
+#
+#   - 
+#
+################################################################################
+Application: &ApplicationDefaults
+    Organizations:
+
+    
+################################################################################
+#
+#   SECTION: Orderer
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for orderer related parameters
+#
+################################################################################
+Orderer: &OrdererDefaults
+    OrdererType: kafka
+
+    addresses:
+        - orderer.reliance-network.com:7050
+
+    # Batch Timeout: The amount of time to wait before creating a batch
+    BatchTimeout: 5s
+
+    # Batch Size: Controls the number of messages batched into a block
+    BatchSize:
+        # Max Message Count: The maximum number of messages to permit in a batch
+        MaxMessageCount: 10
+
+        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
+        # the serialized messages in a batch.
+        AbsoluteMaxBytes: 256 MB
+
+        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
+        # the serialized messages in a batch. A message larger than the preferred
+        # max bytes will result in a batch larger than preferred max bytes.        
+        PreferredMaxBytes: 512 KB
+
+
+    kafka:
+        # Brokers: A list of Kafka brokers to which the orderer connects
+        Brokers:
+            - 127.0.0.1:9092
+
+    Organizations:
+
+
+################################################################################
+#
+#   SECTION: Profiles
+#
+#   - 
+#
+################################################################################
+
+Profiles:
+    OrdererGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *RelianceInfra
+                    - *ReliancePower
+                    - *RelianceComm
+                    - *RelianceEnt
+                    - *RelianceCap
+    ChannelFiveOrgs:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *RelianceInfra
+                - *ReliancePower
+                - *RelianceComm
+                - *RelianceEnt
+                - *RelianceCap
+            Capabilities:
+                <<: *ApplicationCapabilities
