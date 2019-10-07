@@ -1,7 +1,7 @@
 {
-  "name": "digital-property-network",
-  "author": "author",
-  "description": "A blockchain-based implementation for digital property",
+  "name": "asset-tracking",
+  "author": "Kishor Pawar",
+  "description": "A blockchain-based implementation for asset tracking",
   "version": "0.0.2-deploy.19",
   "devDependencies": {
     "browserfs": "^1.2.0",

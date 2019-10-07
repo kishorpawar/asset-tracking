@@ -12,7 +12,9 @@
  * limitations under the License.
  */
 
+
 namespace asset.tracking.system
+
 
 participant Exporter identified by exporterId {
     o String  exporterId
@@ -103,5 +105,40 @@ event AccThreshold {
 
 event ShipmentInPort {
     o String     message
+    --> Shipment shipment
+}
+
+
+abstract transaction shipmentTrans identified by shipmentId {
+    o String shipmentId
+    --> Shipment shipment
+}
+
+transaction accReading extends shipmentTrans {
+    o Double accelerationX
+    o Double accelerationY
+    o Double accelerationZ
+    o String latitude
+    o String longitude
+    o String readingTime optional
+}
+
+transaction TempReading extends shipmentTrans {
+    o Double celsius
+    o String latitude
+    o String longitude
+    o String readingTime optional
+}
+
+transaction GpsReading extends shipmentTrans {
+    o String latitude
+    o Direction latitudeDirection
+    o String longitude
+    o Direction longitudeDirection
+    o String readingTime optional
+    o String readingDate optional
+}
+
+transaction ShipmentReceived {
     --> Shipment shipment
 }

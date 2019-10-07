@@ -18,7 +18,7 @@
 rule ExporterContracts {
     description: 'The exporters can see only their own contracts'
     participant(p): 'asset.tracking.system.Exporter'
-    operation: READ
+    operation: ALL
     resource(c): 'asset.tracking.system.Contract'
     condition: (c.exporter.getIdentifier() === p.getIdentifier())
     action: ALLOW
@@ -29,7 +29,7 @@ rule ExporterContracts {
 rule ExporterShipments {
     description: 'The exporters can see only their own shipments'
     participant(p): 'asset.tracking.system.Exporter'
-    operation: READ
+    operation: ALL
     resource(s): 'asset.tracking.system.Shipment'
     condition: (s.exporter.getIdentifier() === p.getIdentifier())
     action: ALLOW    
@@ -39,7 +39,7 @@ rule ExporterShipments {
 rule ImporterContracts {
     description: 'The importers can see only their own contracts'
     participant(p): 'asset.tracking.system.Importer'
-    operation: READ
+    operation: ALL
     resource(c): 'asset.tracking.system.Contracts'
     condition: (c.importer.getIdentifier() === p.getIdentifier())
     action: ALLOW    
@@ -49,7 +49,7 @@ rule ImporterContracts {
 rule ImporterShipments {
     description: 'The Importers can see only their own shipments'
     participant(p): 'asset.tracking.system.Importer'
-    operation: READ
+    operation: ALL
     resource(s): 'asset.tracking.system.Shipment'
     condition: (s.importer.getIdentifier() === p.getIdentifier())
     action: ALLOW
@@ -60,7 +60,7 @@ rule ImporterShipments {
 rule ShipperContracts {
     description: 'The shippers can see only their own contracts'
     participant(p): 'asset.tracking.system.Shipper'
-    operation: READ
+    operation: ALL
     resource(c): 'asset.tracking.system.Contracts'
     condition: (c.shipper.getIdentifier() === p.getIdentifier())
     action: ALLOW    
@@ -70,19 +70,19 @@ rule ShipperContracts {
 rule ShipperShipments {
     description: 'The shippers can see only their own shipments'
     participant(p): 'asset.tracking.system.Shipper'
-    operation: READ
+    operation: ALL
     resource(s): 'asset.tracking.system.Shipment'
     condition: (s.shipper.getIdentifier() === p.getIdentifier())
     action: ALLOW
 }
 
 
-/*. Rule 7: The participants can view the system: */
+/* Rule 7: The participants can view the system: */
 rule ReadOnlyParticipant {
     description: 'The participants can view the system'
     participant: 'org.hyperledger.composer.system.Participant'
     operation: READ
-    resource: '*.*'
+    resource: '**'
     action: ALLOW    
 }
 
